@@ -25,77 +25,72 @@
     min-height: 100vh;
   }
 
- header {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 20px 32px;
-  display: flex;
-  justify-content: space-between; /* 左右两端对齐 */
-  align-items: center; /* 垂直居中 */
-  gap: 20px;
-}
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
 
-.header-left {
-  flex-shrink: 0; /* 防止标题被挤压 */
-}
+  .header-left {
+    flex-shrink: 0;
+  }
 
-.header-right {
-  flex: 1; /* 让右侧占据剩余空间 */
-  max-width: 600px; /* 限制文案最大宽度，避免太长 */
-  text-align: right; /* 文案靠右对齐，如果你想靠左对齐这里改为 left */
-}
+  /* 优化右上角文案排版 */
+  .header-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end; /* 整体靠右 */
+  }
 
-.intro-text {
-  font-size: 0.9em;
-  color: var(--text-light);
-  line-height: 1.5;
-  margin: 0;
-}
+  .intro-text {
+    max-width: 550px;
+    font-size: 0.85em;
+    color: var(--text-light);
+    line-height: 1.6;
+    margin: 0;
+    text-align: left; /* 内部文字左对齐，保证阅读体验 */
+    padding-left: 16px;
+    border-left: 3px solid var(--purple-mid); /* 左侧装饰线 */
+  }
 
-/* 新增控制区容器样式，整合搜索和筛选 */
-.controls-container {
-  background: var(--white);
-  padding: 16px 32px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  flex-direction: column; /* 垂直排列搜索和筛选 */
-  gap: 16px;
-}
+  .controls-container {
+    background: var(--white);
+    padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
 
-.search-container {
-  width: 100%;
-}
+  .search-container {
+    width: 100%;
+  }
 
-.search-box {
-  width: 100%;
-  max-width: 400px; /* 控制搜索框宽度 */
-  /* 保留你原有的 padding, border, border-radius 等样式 */
-}
+  .search-box {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 0.95em;
+    outline: none;
+  }
+  .search-box:focus {
+    border-color: var(--purple);
+  }
 
-/* 调整原有筛选器样式，取消之前的 margin 等可能冲突的设定 */
-.filters {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
+  .filters {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
 
   header h1 { font-size: 1.1em; color: var(--purple); white-space: nowrap; }
-
-  .search-bar {
-    flex: 1;
-    min-width: 180px;
-    max-width: 320px;
-    padding: 7px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 20px;
-    font-size: 0.9em;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .search-bar:focus { border-color: var(--purple); }
-
-  .filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
   select {
     padding: 6px 10px;
@@ -117,19 +112,6 @@
   .year-range input:focus { border-color: var(--purple); }
 
   .count { font-size: 0.82em; color: var(--text-light); white-space: nowrap; }
-
-  /* 网站介绍 */
-  .intro {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 24px 32px 0;
-  }
-  .intro p {
-    font-size: 0.92em;
-    color: var(--text-light);
-    line-height: 1.7;
-    max-width: 640px;
-  }
 
   .layout {
     display: flex;
@@ -222,8 +204,9 @@
   }
 
   @media (max-width: 768px) {
-    header { padding: 12px 14px; }
-    .intro { padding: 18px 16px 0; }
+    header { padding: 12px 14px; flex-direction: column; align-items: flex-start; }
+    .header-right { justify-content: flex-start; margin-top: 10px; }
+    .intro-text { padding-left: 10px; border-left-width: 2px; }
     .layout { flex-direction: column; padding: 14px; }
     .sidebar { width: 100%; }
     .chip-group { flex-direction: row; flex-wrap: wrap; }
@@ -233,13 +216,13 @@
 <body>
 
 <header>
-    <div class="header-left">
+  <div class="header-left">
     <div class="logo">📚 女性主义书籍</div>
   </div>
   <div class="header-right">
     <p class="intro-text">
-      这是一个按时间线整理的女性主义书籍库
-      收录从十五世纪至今、不同国家和议题下的相关著作。<br>
+      这是一个按时间线整理的女性主义书籍库，收录从十五世纪至今、不同国家和议题下的相关著作。<br>
+      希望能帮助对这个领域感兴趣的人，找到值得阅读的下一本书。
     </p>
   </div>
 </header>
@@ -249,15 +232,15 @@
     <input type="text" id="searchInput" class="search-box" placeholder="搜索书名、作者、描述...">
   </div>
   <div class="filters">
-     <select id="filterNationality"><option value="">全部国籍</option></select>
+    <select id="filterNationality"><option value="">全部国籍</option></select>
     <select id="filterTheme"><option value="">全部主题</option></select>
     <div class="year-range">
       <input type="number" id="yearFrom" placeholder="从">
       <span>—</span>
       <input type="number" id="yearTo" placeholder="到">
     </div>
+    <span class="count" id="count"></span>
   </div>
-  <span class="count" id="count"></span>
 </div>
 
 <div class="layout">
@@ -359,7 +342,8 @@ function populateSelects(books) {
 }
 
 function filter(books) {
-  const q     = document.getElementById('search').value.trim().toLowerCase();
+  // 注意这里获取搜索框的值，ID 已经改成了 searchInput
+  const q     = document.getElementById('searchInput').value.trim().toLowerCase();
   const nat   = document.getElementById('filterNationality').value;
   const theme = document.getElementById('filterTheme').value;
   const yf    = parseInt(document.getElementById('yearFrom').value) || 0;
@@ -370,7 +354,10 @@ function filter(books) {
     if (nat   && b.nationality !== nat)   return false;
     if (theme && b.theme !== theme)       return false;
     if (b.year < yf || b.year > yt)       return false;
-    if (activeKeyword && !`${b.title}${b.author}${b.description}${b.theme}${(b.tags||[]).join('')}`.toLowerCase().includes(activeKeyword.toLowerCase())) return false;
+    
+    // 修复了原来代码中 b.tags 可能是 undefined 导致的报错
+    const tagsString = b.tags ? b.tags.join('') : '';
+    if (activeKeyword && !`${b.title}${b.author}${b.description}${b.theme}${tagsString}`.toLowerCase().includes(activeKeyword.toLowerCase())) return false;
     return true;
   });
 }
@@ -435,7 +422,8 @@ async function load() {
   }
 }
 
-['search','filterNationality','filterTheme','yearFrom','yearTo'].forEach(id => {
+// 这里的 ID 列表必须和 HTML 中的 ID 完全一致
+['searchInput','filterNationality','filterTheme','yearFrom','yearTo'].forEach(id => {
   document.getElementById(id).addEventListener('input', render);
 });
 

@@ -272,8 +272,9 @@ async function loadBook() {
 function render() {
   const b = currentBook;
 
-  const doubanQuery = encodeURIComponent(b.title);
-  const zlibQuery = encodeURIComponent(b.title + ' ' + b.author);
+const doubanUrl = `https://search.douban.com/book/subject_search?search_text=${encodeURIComponent(b.title)}`;
+const zlibUrl = `https://z-library.rs/s/${encodeURIComponent(b.title + ' ' + b.author)}`;
+
 
   document.getElementById('container').innerHTML = `
     <div class="book-header">

@@ -320,8 +320,9 @@ const zlibUrl = `https://z-library.rs/s/${encodeURIComponent(b.title + ' ' + b.a
     <div class="section">
       <div class="section-title">外部资源</div>
       <div class="external-links">
-        <a class="ext-link" href="https://www.douban.com/search?q=${doubanQuery}" target="_blank">📗 豆瓣搜索</a>
-        ${b.zlib ? `<a class="ext-link" href="${b.zlib}" target="_blank">📖 Z-Library</a>` : `<a class="ext-link" href="https://zh.go-to-zlib.tk/s/${zlibQuery}" target="_blank">📖 Z-Library搜索</a>`}
+<a href="${doubanUrl}" target="_blank" rel="noopener noreferrer">在豆瓣搜索</a>
+<a href="${zlibUrl}" target="_blank" rel="noopener noreferrer">在 Z-Library 搜索</a>
+
       </div>
     </div>
 

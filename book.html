@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>书籍详情</title>
+<style>
+  :root {
+    --purple: #7c5cbf;
+    --purple-light: #f3f0ff;
+    --purple-mid: #e0d7f5;
+    --text: #2d2d2d;
+    --text-light: #666;
+    --border: #e0e0e0;
+    --white: #ffffff;
+    --bg: #fafafa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .back-btn {
+    color: var(--purple);
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  .book-header {
+    margin-bottom: 28px;
+  }
+
+  .book-year-badge {
+    display: inline-block;
+    font-size: 0.78em;
+    font-weight: 700;
+    color: var(--purple);
+    background: var(--purple-light);
+    padding: 3px 12px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+
+  .book-title {
+    font-size: 1.6em;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .book-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .tag {
+    font-size: 0.8em; padding: 3px 10px; border-radius: 10px;
+    background: var(--purple-light); color: var(--purple);
+  }
+  .tag.nationality { background: #fff3e0; color: #e65100; }
+  .tag.theme { background: #e8f5e9; color: #2e7d32; }
+
+  .section {
+    margin-bottom: 28px;
+  }
+
+  .section-title {
+    font-size: 0.78em;
+    font-weight: 700;
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--purple-mid); }
+
+  .section-content {
+    font-size: 0.95em;
+    line-height: 1.75;
+    color: var(--text);
+  }
+
+  .placeholder-text {
+    font-size: 0.9em;
+    color: var(--text-light);
+    font-style: italic;
+    padding: 14px;
+    background: var(--white);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+  }
+
+  .edition-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .edition-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.88em;
+  }
+  .edition-label {
+    font-weight: 600;
+    color: var(--purple);
+    margin-right: 8px;
+  }
+
+  .external-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ext-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.88em;
+    transition: all 0.15s;
+  }
+  .ext-link:hover { border-color: var(--purple); color: var(--purple); }
+
+  /* 聊天框 */
+  .chat-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+
+  .chat-disclaimer {
+    font-size: 0.78em;
+    color: var(--text-light);
+    background: #fff8e1;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 14px;
+  }
+
+  .chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .chat-msg {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.9em;
+    line-height: 1.6;
+    max-width: 85%;
+  }
+  .chat-msg.user {
+    background: var(--purple);
+    color: white;
+    align-self: flex-end;
+  }
+  .chat-msg.ai {
+    background: var(--purple-light);
+    color: var(--text);
+    align-self: flex-start;
+  }
+  .chat-msg.loading {
+    color: var(--text-light);
+    font-style: italic;
+  }
+
+  .chat-input-row {
+    display: flex;
+    gap: 8px;
+  }
+  .chat-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    font-size: 0.9em;
+    outline: none;
+  }
+  .chat-input:focus { border-color: var(--purple); }
+
+  .chat-send {
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: var(--purple);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+  }
+  .chat-send:hover { background: #6a4ba8; }
+  .chat-send:disabled { background: var(--border); cursor: not-allowed; }
+
+  .not-found {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-light);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-btn" href="index.html">← 返回时间线</a>
+</header>
+
+<div class="container" id="container">
+  <div class="not-found">加载中…</div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const titleParam = decodeURIComponent(params.get('title') || '');
+
+let currentBook = null;
+
+async function loadBook() {
+  try {
+    const res = await fetch('books.json');
+    const books = await res.json();
+    currentBook = books.find(b => b.title === titleParam);
+
+    if (!currentBook) {
+      document.getElementById('container').innerHTML = '<div class="not-found">没有找到这本书</div>';
+      return;
+    }
+    render();
+  } catch {
+    document.getElementById('container').innerHTML = '<div class="not-found">加载失败</div>';
+  }
+}
+
+function render() {
+  const b = currentBook;
+
+  const doubanQuery = encodeURIComponent(b.title);
+  const zlibQuery = encodeURIComponent(b.title + ' ' + b.author);
+
+  document.getElementById('container').innerHTML = `
+    <div class="book-header">
+      <div class="book-year-badge">${b.year}</div>
+      <div class="book-title">${b.title}</div>
+      <div class="book-meta-row">
+        <span class="tag">${b.author}</span>
+        ${b.nationality ? `<span class="tag nationality">${b.nationality}</span>` : ''}
+        ${b.theme ? `<span class="tag theme">${b.theme}</span>` : ''}
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">笔记</div>
+      <div class="section-content">
+        ${b.description ? b.description : '<div class="placeholder-text">暂无笔记</div>'}
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">作者介绍</div>
+      <div class="section-content">
+        ${b.authorBio ? b.authorBio : '<div class="placeholder-text">作者介绍待补充</div>'}
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">译本信息</div>
+      <div class="section-content">
+        ${b.editions && b.editions.length ? `
+          <div class="edition-list">
+            ${b.editions.map(e => `
+              <div class="edition-item">
+                <span class="edition-label">${e.language || ''}</span>
+                ${e.publisher || ''} ${e.year ? '· ' + e.year : ''} ${e.translator ? '· 译者：' + e.translator : ''}
+              </div>
+            `).join('')}
+          </div>
+        ` : '<div class="placeholder-text">译本信息待补充</div>'}
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">外部资源</div>
+      <div class="external-links">
+        <a class="ext-link" href="https://www.douban.com/search?q=${doubanQuery}" target="_blank">📗 豆瓣搜索</a>
+        ${b.zlib ? `<a class="ext-link" href="${b.zlib}" target="_blank">📖 Z-Library</a>` : `<a class="ext-link" href="https://zh.go-to-zlib.tk/s/${zlibQuery}" target="_blank">📖 Z-Library搜索</a>`}
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">和这本书聊聊</div>
+      <div class="chat-box">
+        <div class="chat-disclaimer">⚠️ 以下内容包含AI生成的信息，可能不完全准确，请自行核实重要细节。</div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chatInput" placeholder="问问关于这本书的问题…" onkeydown="if(event.key==='Enter') sendMessage()">
+          <button class="chat-send" id="chatSend" onclick="sendMessage()">发送</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+let chatHistory = [];
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const messagesEl = document.getElementById('chatMessages');
+  const sendBtn = document.getElementById('chatSend');
+
+  messagesEl.innerHTML += `<div class="chat-msg user">${text}</div>`;
+  input.value = '';
+  sendBtn.disabled = true;
+
+  const loadingId = 'loading-' + Date.now();
+  messagesEl.innerHTML += `<div class="chat-msg loading" id="${loadingId}">思考中…</div>`;
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  const systemContext = currentBook.description
+    ? `你正在讨论的书是《${currentBook.title}》，作者${currentBook.author}，出版于${currentBook.year}年。已有的笔记内容：${currentBook.description}。请结合这些信息以及你自己的知识，自然地回答用户关于这本书的问题，用中文回答，语气平实不要过于学术。`
+    : `你正在讨论的书是《${currentBook.title}》，作者${currentBook.author}，出版于${currentBook.year}年。目前没有现成的笔记，请依靠你自己的知识，自然地回答用户关于这本书的问题，用中文回答，语气平实不要过于学术。`;
+
+  chatHistory.push({ role: 'user', content: text });
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        system: systemContext,
+        messages: chatHistory
+      })
+    });
+    const data = await response.json();
+    const aiText = data.content.map(c => c.text || '').join('');
+
+    document.getElementById(loadingId).remove();
+    messagesEl.innerHTML += `<div class="chat-msg ai">${aiText}</div>`;
+    chatHistory.push({ role: 'assistant', content: aiText });
+  } catch (e) {
+    document.getElementById(loadingId).remove();
+    messagesEl.innerHTML += `<div class="chat-msg ai">抱歉，出了点问题，请稍后再试。</div>`;
+  }
+
+  sendBtn.disabled = false;
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+loadBook();
+</script>
+</body>
+</html>

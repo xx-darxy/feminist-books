@@ -273,7 +273,7 @@ function render() {
   const b = currentBook;
 
 const doubanUrl = `https://search.douban.com/book/subject_search?search_text=${encodeURIComponent(b.title)}`;
-const zlibUrl = `https://z-library.bz${encodeURIComponent(b.title + ' ' + b.author)}`;
+const zlibUrl = `https://z-library.bz/s${encodeURIComponent(b.title + ' ' + b.author)}`;
 
 
   document.getElementById('container').innerHTML = `

@@ -322,72 +322,9 @@ const zlibUrl = `https://z-library.rs/s/${encodeURIComponent(b.title + ' ' + b.a
       <div class="external-links">
 <a href="${doubanUrl}" target="_blank" rel="noopener noreferrer">在豆瓣搜索</a>
 <a href="${zlibUrl}" target="_blank" rel="noopener noreferrer">在 Z-Library 搜索</a>
-
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">和这本书聊聊</div>
-      <div class="chat-box">
-        <div class="chat-disclaimer">⚠️ 以下内容包含AI生成的信息，可能不完全准确，请自行核实重要细节。</div>
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input-row">
-          <input class="chat-input" id="chatInput" placeholder="问问关于这本书的问题…" onkeydown="if(event.key==='Enter') sendMessage()">
-          <button class="chat-send" id="chatSend" onclick="sendMessage()">发送</button>
-        </div>
       </div>
     </div>
   `;
-}
-
-let chatHistory = [];
-
-async function sendMessage() {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text) return;
-
-  const messagesEl = document.getElementById('chatMessages');
-  const sendBtn = document.getElementById('chatSend');
-
-  messagesEl.innerHTML += `<div class="chat-msg user">${text}</div>`;
-  input.value = '';
-  sendBtn.disabled = true;
-
-  const loadingId = 'loading-' + Date.now();
-  messagesEl.innerHTML += `<div class="chat-msg loading" id="${loadingId}">思考中…</div>`;
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-
-  const systemContext = currentBook.description
-    ? `你正在讨论的书是《${currentBook.title}》，作者${currentBook.author}，出版于${currentBook.year}年。已有的笔记内容：${currentBook.description}。请结合这些信息以及你自己的知识，自然地回答用户关于这本书的问题，用中文回答，语气平实不要过于学术。`
-    : `你正在讨论的书是《${currentBook.title}》，作者${currentBook.author}，出版于${currentBook.year}年。目前没有现成的笔记，请依靠你自己的知识，自然地回答用户关于这本书的问题，用中文回答，语气平实不要过于学术。`;
-
-  chatHistory.push({ role: 'user', content: text });
-
-  try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 1000,
-        system: systemContext,
-        messages: chatHistory
-      })
-    });
-    const data = await response.json();
-    const aiText = data.content.map(c => c.text || '').join('');
-
-    document.getElementById(loadingId).remove();
-    messagesEl.innerHTML += `<div class="chat-msg ai">${aiText}</div>`;
-    chatHistory.push({ role: 'assistant', content: aiText });
-  } catch (e) {
-    document.getElementById(loadingId).remove();
-    messagesEl.innerHTML += `<div class="chat-msg ai">抱歉，出了点问题，请稍后再试。</div>`;
-  }
-
-  sendBtn.disabled = false;
-  messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
 loadBook();
